@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>   
+
+    DirectoryIndex index.php
+    
+    RewriteEngine On
+
+    # Edit this in your init method too if you script lives in a subfolder
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    RewriteRule ^(.*)$ index.php [QSA]
+
+</IfModule>
