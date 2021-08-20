@@ -1,0 +1,23 @@
+#div-alert {
+    display: none;
+    position: absolute;
+    padding:20px;
+    top: 0; 
+    left: 0;
+    z-index: 10;
+    background-color: rgb(13, 110, 253);
+    text-align:center;
+    color: white;
+    width:100%;
+}
+
+.alert-close-btn {
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    float: right;
+    font-size: 30px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}

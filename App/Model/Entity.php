@@ -1,4 +1,7 @@
 <?php
+
+    namespace App\Model;
+
     class Entity {
         public $id;
         
@@ -28,7 +31,7 @@
             return $mapped;
         }
 
-        public static function setTableName($name) {
+        public static function setTableName(string $name) {
             self::$tableName = strtolower($name);
         }
 

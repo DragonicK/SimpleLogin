@@ -1,4 +1,9 @@
 <?php
+
+    namespace App\Database;
+
+    use App\Model\Entity;
+
     class Context implements IContext {
         private $connection;
         private $typeof;
@@ -8,7 +13,20 @@
             $this->typeof = $typeof;
         }
 
-        public function save($entity)  {
+        public function exists(int $identity) {
+            $table = $this->typeof->getTableName();
+            $query = 'SELECT id FROM ' . $table . ' WHERE id = :id LIMIT 1';
+ 
+            $pdo = $this->connection->getPdo();
+
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id' , $identity);
+            $stmt->execute();
+
+            return $stmt->rowCount() == 1 ? true : false;
+        }
+
+        public function save(Entity $entity)  {
             $table =  $entity->getTableName();
             $query = '';
 
@@ -22,12 +40,10 @@
             }
 
             $stmt = $this->bindParamFromEntity($query, $entity);
-            $result = $stmt->execute();
-
-            return $result;
+            return $stmt->execute();
         }
 
-        public function delete($entity) {
+        public function delete(Entity $entity) {
             $table =  $entity->getTableName();
             $query = 'DELETE FROM ' . $table . ' WHERE id = :id';
 
@@ -88,6 +104,7 @@
             $whereConditions = [];
 
             if (!empty($options)){
+                
                 foreach($options as $key => $value) {                      
                     if (isset($operators[$key])) {
                         $operator = $operators[$key];
@@ -96,7 +113,7 @@
                         $operator = '';
                     }
 
-                    $this->addToQuery($operator, $key, $value, $whereConditions);
+                    $this->addToQuery($operator, $key, $whereConditions);
                 }
 
                 $whereClause = 'WHERE ' . implode(' ', $whereConditions);
@@ -105,7 +122,7 @@
             return $whereClause;
         }
 
-        private function addToQuery($operator, $key, $value, &$whereConditions = []) {
+        private function addToQuery($operator, $key, &$whereConditions = []) {
             $operator = strtoupper($operator);
 
             switch ($operator) {
@@ -120,7 +137,7 @@
             }
         }
 
-        private function createInsertQuery($entity) {
+        private function createInsertQuery(Entity $entity) {
             $properties = $entity->getProperties();
 
             $fields = '';
@@ -147,7 +164,7 @@
             return $query;
         }
 
-        private function createUpdateQuery($entity) {
+        private function createUpdateQuery(Entity $entity) {
             $properties = $entity->getProperties();
             $query = '';     
 
@@ -167,7 +184,7 @@
             return str_replace(', id = :id', '', $query) . ' WHERE id = :id LIMIT 1';
         }
 
-        private function bindParamFromEntity($query, $entity) {
+        private function bindParamFromEntity(string $query, Entity $entity) {
             $pdo = $this->connection->getPdo();
             $stmt = $pdo->prepare($query);
 
@@ -185,7 +202,7 @@
             return $stmt;
         }
 
-        private function bindParamFromValues($query, $params = []) {
+        private function bindParamFromValues(string $query, $params = []) {
             // This is WRONG:
             // "SELECT * FROM `users` WHERE `firstname` LIKE '%:keyword%'";
 

@@ -1,10 +1,15 @@
 <?php
+
+    // https://steampixel.de/simple-and-elegant-url-routing-with-php/
+    
+    namespace App\Routing;
+
     class Router implements IRouter {
         private $routes = Array();
         private $errorPage = null;
         private $notAllowed = null;
 
-        public function add($expression, $function, $method = 'get') {
+        public function add($expression, $function, string $method = 'get') {
             array_push($this->routes,
                 array('expression' => $expression,
                       'function' => $function,

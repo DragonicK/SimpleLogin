@@ -1,43 +1,45 @@
 <?php
+
+    namespace App\Routing;
+
+    use App\Configuration;
+    use App\Controller\Dashboard;
+    use App\Controller\Register;
+    use App\Controller\Administration;
+
     $router = new Router();
 
-    $router->add('/', function() {
-        $home = new Home();
-        $home->index();
+    // View login page.
+    $router->add('/administrator', function() {
+        $admin = new Administration(new Configuration());
+        $admin->index();
     }, 'get');
 
-    $router->add('/home', function() {
-        $home = new Home();
-        $home->index();
-    }, 'get');
-
-    $router->add('/login', function() {
-        $login = new Login();
-        $login->index();
-    }, 'get');
-
-    $router->add('/index', function() {
-        $login = new Login();
-        $login->signIn();
-    }, 'get');
-
+    // Sign in.
     $router->add('/signin', function() {
-        $login = new Login();
-        $login->signIn();
+        $admin = new Administration(new Configuration());
+        $admin->signIn();
     }, 'post');
 
-    $router->add('/logout', function() {
-        $login = new Login();
-        $login->signOut();
+    // Logout.
+    $router->add('/signout', function() {
+        $admin = new Administration(new Configuration());
+        $admin->signOut();
     }, 'post');
+
+    $router->add('/dashboard', function() {
+        $board = new Dashboard(new Configuration());
+        $board->index();
+    }, 'get');
 
     $router->add('/register', function() {
-        $register = new Register();
-        $register->index();
+        $board = new Register(new Configuration());
+        $board->index();
     }, 'get');
 
     $router->add('/signup', function() {
-        $register = new Register();
-        $register->signUp();
+        $board = new Register(new Configuration());
+        $board->signup();
     }, 'post');
+
 ?>

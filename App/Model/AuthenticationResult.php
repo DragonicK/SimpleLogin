@@ -1,4 +1,7 @@
 <?php
+
+    namespace App\Model;
+    
     abstract class AuthenticationResult {
         const Input = 0;
         const Sucess = 1;

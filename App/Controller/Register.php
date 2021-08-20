@@ -1,55 +1,124 @@
 <?php
+    
+    namespace App\Controller;
+
+    use App\Configuration;
+    use App\Model\User;
+    use App\Security\Hash;
+    use App\Model\AccessLevel;
+    use App\Service\UserRepository;
+    use App\Model\RegistrationResult;
+    use App\Language\Language;
+
     class Register extends Controller {
+
+        function __construct(Configuration $configuration) {
+            parent::__construct($configuration);
+        }
 
         public function index() {
             session_start();
 
             if (isset($_SESSION['id'])) { 
-                header("Location: index");
+                header("Location: administrator");
             }
             else {
-                require_once 'resources/view/register.php';
+                $config = $this->getAppConfiguration();
+                $language = $this->getDefaultLanguage();
+                $this->view('administrator', 'register', [ 'config' => $config ], $language);
             }
         }
 
-        public function signUp() {
-            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-            $passphrase = filter_input(INPUT_POST, 'passphrase', FILTER_SANITIZE_STRING);
+        public function signup() {
+            $data = json_decode(file_get_contents("php://input"));
+
+            $username = filter_var($data->username, FILTER_SANITIZE_STRING);
+            $passphrase = filter_var($data->passphrase, FILTER_SANITIZE_STRING); 
+            $confirmation = filter_var($data->confirmation, FILTER_SANITIZE_STRING);
+            $email = filter_var($data->email, FILTER_SANITIZE_STRING); 
+
+            $language = $this->getDefaultLanguage();
  
-            if ($username && $passphrase) {
+            if ($username && $passphrase && $confirmation && $email) {
+                if (!$this->isValidPassphrase($passphrase, $confirmation)) {
+                    $this->sendReponse(RegistrationResult::PassphraseDoNotMatch, $language);
+                    return;
+                }
+                       
                 $connection = $this->getConnection();
+
+                if (!$connection->connected)  {
+                    $this->sendReponse(RegistrationResult::Database, $language);
+                    return;
+                }   
+
                 $repository = new UserRepository($connection);
 
-                $user = $repository->findByUsername($username);
-
-                if ($user == null) {
-                    $user = new User();
-                    $user->id = 0;
-                    $user->name = $username;
-                    $user->username = $username;
-                    $user->passphrase = Hash::compute($passphrase);
-                    $user->accessLevel = AccessLevel::Normal;
-    
-                    $repository->save($user);   
-                    $this->showSuccessMessage("The user is now registered");  
+                if ($this->exists($repository, $username)) {
+                    $this->sendReponse(RegistrationResult::UsernameExists, $language);
+                    return;
                 }
+
+                $user = new User();
+                $user->id = 0;
+                $user->name = $language->noname;
+                $user->username = $username;
+                $user->passphrase = Hash::compute($passphrase);
+                $user->accessLevel = AccessLevel::Normal;
+                $user->email = $email;
+                $user->language = 'English';
+
+                if ($repository->save($user)) {
+                    $this->sendReponse(RegistrationResult::Success, $language);
+                } 
                 else {
-                    $this->showErrorMessage("Username already taken");
-                }   
+                    $this->sendReponse(RegistrationResult::Database, $language);
+                }
+               
             }
             else {
-                $this->showErrorMessage("Invalid Input");
+                $this->sendReponse(RegistrationResult::Invalid, $language);
             }
         }
 
-        private function showSuccessMessage($message) {
-            echo "<script>alert('" . $message ."');</script>";
-            require_once 'resources/view/home.php';
+        private function exists(UserRepository $repository, string $username) {
+            return $repository->findByUsername($username) != null;
         }
 
-        private function showErrorMessage($message) {
-            echo "<script>alert('" . $message ."');</script>";
-            require_once 'resources/view/register.php';
+        private function isValidPassphrase(string $passphrase, string $confirmation) {          
+            return strcmp($passphrase, $confirmation) == 0;
+        }
+        
+        private function sendReponse(int $status, Language $language) {
+            $message = '';
+
+            switch ($status) {
+                case RegistrationResult::Success:
+                    $message = $language->registerSuccess;
+                    break;
+                case RegistrationResult::Invalid:
+                    $message = $language->registerInvalidInput;
+                    break;
+                case RegistrationResult::Database:
+                    $message = $language->responseDatabase;
+                    break;
+                case RegistrationResult::EmailExists:
+                    $message = $language->registerEmailExists;
+                    break;
+                case RegistrationResult::UsernameExists:
+                    $message = $language->registerUsernameExists;
+                    break;
+                case RegistrationResult::PassphraseDoNotMatch:
+                    $message = $language ->registerPassphraseInvalid;
+                    break;                                 
+            }
+
+            $response[] = array(
+                'status' => $status,
+                'message' => $message
+            );
+            
+            echo json_encode($response);
         }
     }
 ?>

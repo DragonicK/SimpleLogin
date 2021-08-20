@@ -1,4 +1,10 @@
 <?php  
+
+    namespace App\Service;
+
+    use App\Model\Entity;
+    use App\Database\IContext;
+
     class Repository implements IRepository {
         protected IContext $context;
 
@@ -6,19 +12,19 @@
             $this->context = $iContext;
         }
 
-        public function save($entity) {
-            $this->context->save($entity);
+        public function save(Entity $entity) {
+            return $this->context->save($entity);
         }
 
-        public function delete($entity) {       
-            $this->context->delete($entity);
+        public function delete(Entity $entity) {       
+            return $this->context->delete($entity);
         }
 
-        public function exists($identity) {
-            return ($this->find($identity) != null) ? true : false;
+        public function exists(int $identity) {
+            return $this->context->exists($identity);
         }
 
-        public function find($identity) {
+        public function find(int $identity) {
             $query = [ 'id' => $identity ];
             $empty = [ '' => '' ];
 

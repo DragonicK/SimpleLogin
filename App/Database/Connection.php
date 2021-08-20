@@ -1,18 +1,23 @@
 <?php
+
+    namespace App\Database;
+
+    use App\Configurations\DbConfiguration;
+
     class Connection {
         public $error = null;
         public $connected = false;
 
         private $pdo = null;
 
-        function __construct(DbSettings $settings) {
+        function __construct(DbConfiguration $dbConfiguration) {
             try {
-                $dsn = 'mysql:host=' . $settings->host . ';' . 
-                'port=' . $settings->port . ';' . 
-                'dbname=' . $settings->database . ';' . 
+                $dsn = 'mysql:host=' . $dbConfiguration->host . ';' . 
+                'port=' . $dbConfiguration->port . ';' . 
+                'dbname=' . $dbConfiguration->database . ';' . 
                 'charset=utf8';
-        
-                $this->pdo = new \PDO($dsn, $settings->userId, $settings->passphrase);
+
+                $this->pdo = new \PDO($dsn, $dbConfiguration->userId, $dbConfiguration->passphrase);
                 $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
                 $this->error = null;
@@ -23,9 +28,10 @@
                 $this->error = $ex->getMessage();
             }
         }
-
+  
         public function getPdo() {
             return $this->pdo;            
         }
     }
+    
 ?>
