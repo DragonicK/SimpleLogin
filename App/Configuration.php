@@ -47,7 +47,9 @@
                 'Routing',
                 'Controller',
                 'Language',
-                'Security' ];   
+                'Security',
+                'Core' ];   
         }
     }
+    
 ?>

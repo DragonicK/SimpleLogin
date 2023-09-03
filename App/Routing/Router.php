@@ -1,7 +1,7 @@
 <?php
 
     // https://steampixel.de/simple-and-elegant-url-routing-with-php/
-    
+
     namespace App\Routing;
 
     class Router implements IRouter {
@@ -79,7 +79,7 @@
 
             // No matching route was found
             if (!$route_match_found) {
-            // But a matching path exists
+                // But a matching path exists
                 if($path_match_found) {
                     $this->methodNotAllowed($path, $method);
                 }
@@ -105,4 +105,5 @@
             }
         }
     }
+    
 ?>

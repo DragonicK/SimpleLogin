@@ -7,7 +7,6 @@
         public string $name;
         public string $passphrase;
         public int $accessLevel;
-        public string $language;
         public string $email;
 
         function __construct() { 
@@ -16,8 +15,8 @@
             $passphrase = '';
             $accessLevel = AccessLevel::None;
             $email = '';
-
             parent::setTableName('users');
         }     
     }
+    
 ?>

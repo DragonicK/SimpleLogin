@@ -9,6 +9,11 @@
 
     $router = new Router();
 
+    $router->add('/', function() {
+        $admin = new Administration(new Configuration());
+        $admin->index();
+    }, 'get');
+
     // View login page.
     $router->add('/administrator', function() {
         $admin = new Administration(new Configuration());
@@ -39,7 +44,7 @@
 
     $router->add('/signup', function() {
         $board = new Register(new Configuration());
-        $board->signup();
+        $board->signUp();
     }, 'post');
 
 ?>

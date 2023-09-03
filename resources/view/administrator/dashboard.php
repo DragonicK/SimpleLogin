@@ -3,68 +3,64 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title><?= $config->title ?></title>
 
-        <link href="resources/css/bootstrap.css" rel="stylesheet">
+        <link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css">
+        <link href="resources/css/dashboard.css" rel="stylesheet" type="text/css">
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     </head>
+
     <body>
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <div style="background-color: coral;" class="nav-item dropdown">
+    <header>
+        <div class="container-fluid">
+            <div class="row"> 
+                <div class="col-md-12">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-brand">
+                    
+                    <a class="navbar-brand" href="dashboard">Brand</a>
 
-                    <!-- ITEM -->
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Home</a>
-                        </li>
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav">
 
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Home</a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Porta</a>
-                        </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Link</a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Morcego</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Link</a>
+                            </li>
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown
-                            </a>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Configuration
+                                </a>
 
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </li>
+                                <ul class="dropdown-menu" aria-labelledby="meuDropdown">
+                                    <li><a href="#" class="dropdown-item">Settings</a></li>
+                                </ul>
+                            
+                            </li>        
+                        </ul>
+                    </div>
 
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Porta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Morcego</a>
-                        </li>
-                    </ul>
+                    </nav>
                 </div>
             </div>
-        </nav>
+        </div>
+    </header>
 
-        <div style="margin: 20px;" class="container-fluid">
+    <main>
+    <div style="margin: 20px;" class="container-fluid">
             <div>
-                <span>Bem-vindo: <?= $user->name ?></span>          
+                <span>Bem-vindo:
+                    <?= $user->name ?></span>
             </div>
 
             <form action="signout" method="POST">
@@ -73,10 +69,10 @@
                 </div>
             </form>
         </div>
-
-        <script src="resources/js/bootstrap.bundle.min.js"></script>  
-        <script src="resources/js/bootstrap.bundle.js"></script>
-        <script src="resources/js/bootstrap.js"></script>
+    </main>
+       
+    <script src="resources/js/bootstrap.js"></script>
 
     </body>
+
 </html>

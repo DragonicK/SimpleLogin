@@ -8,4 +8,5 @@
         const Administrator = 2;
         const Superior = 3;
     }
+    
 ?>

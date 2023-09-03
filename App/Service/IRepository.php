@@ -11,4 +11,5 @@
         public function find(int $identity);
         public function findAll();
     } 
+    
 ?>

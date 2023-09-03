@@ -8,4 +8,5 @@
         public function setNotAllowed($expression, $function);
         public function run($basepath, $request, $method);
     }
+    
 ?>

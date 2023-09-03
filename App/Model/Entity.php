@@ -3,7 +3,7 @@
     namespace App\Model;
 
     class Entity {
-        public $id;
+        public int $id = 0;
         
         private static $tableName;
 
@@ -39,4 +39,5 @@
             return self::$tableName;
         }
     }
+    
 ?>

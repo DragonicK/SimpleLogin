@@ -3,12 +3,11 @@
     namespace App\Controller;
 
     use App\Configuration;
-    use App\Model\User;
-    use App\Security\Hash;
-    use App\Model\AccessLevel;
     use App\Service\UserRepository;
     use App\Model\RegistrationResult;
     use App\Language\Language;
+
+    use App\Core\UserFactory;
 
     class Register extends Controller {
 
@@ -25,11 +24,12 @@
             else {
                 $config = $this->getAppConfiguration();
                 $language = $this->getDefaultLanguage();
+                
                 $this->view('administrator', 'register', [ 'config' => $config ], $language);
             }
         }
 
-        public function signup() {
+        public function signUp() {
             $data = json_decode(file_get_contents("php://input"));
 
             $username = filter_var($data->username, FILTER_SANITIZE_STRING);
@@ -59,22 +59,16 @@
                     return;
                 }
 
-                $user = new User();
-                $user->id = 0;
-                $user->name = $language->noname;
-                $user->username = $username;
-                $user->passphrase = Hash::compute($passphrase);
-                $user->accessLevel = AccessLevel::Normal;
-                $user->email = $email;
-                $user->language = 'English';
+                $factory = new UserFactory();
 
-                if ($repository->save($user)) {
+                $user = $factory->getUser($language->noname, $username, $passphrase, $email);
+
+                if ($repository->save($user)) {  
                     $this->sendReponse(RegistrationResult::Success, $language);
                 } 
                 else {
                     $this->sendReponse(RegistrationResult::Database, $language);
                 }
-               
             }
             else {
                 $this->sendReponse(RegistrationResult::Invalid, $language);
@@ -82,7 +76,7 @@
         }
 
         private function exists(UserRepository $repository, string $username) {
-            return $repository->findByUsername($username) != null;
+            return $repository->findSingleFromUsername($username) != null;
         }
 
         private function isValidPassphrase(string $passphrase, string $confirmation) {          
@@ -121,4 +115,5 @@
             echo json_encode($response);
         }
     }
+    
 ?>

@@ -5,8 +5,8 @@
     use App\Configuration;
     use App\Security\Hash;
     use App\Language\Language;
-    use App\Service\UserRepository;
     use App\Model\AuthenticationResult;
+    use App\Service\UserRepository;
 
     class Administration extends Controller {
 
@@ -50,15 +50,13 @@
         }
 
         private function authenticateSession() {
-            $language = null;
-            $user = $this->getUserFromSession();
-            $config = $this->getAppConfiguration();
+            $user = $this->getUserFromSession();           
 
-            if ($user != null) {   
-                $language = $this->getLanguage($user->language);
-                $this->view('administrator', 'index', [ 'config' => $config ], $language);
+            if ($user != null) {
+                header('Location: dashboard');
             }
             else {
+                $config = $this->getAppConfiguration();
                 $language = $this->getDefaultLanguage();
                 $this->view('administrator', 'login', [ 'config' => $config ], $language);
             }
@@ -156,5 +154,7 @@
             
             echo json_encode($response);
         }
+
     }
+    
 ?>

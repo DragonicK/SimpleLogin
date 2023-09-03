@@ -10,4 +10,5 @@
         public function delete(Entity $entity);
         public function select($options = [], $operators = [], $additional = '');
     } 
+    
 ?>

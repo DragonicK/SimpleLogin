@@ -7,4 +7,5 @@
             return hash('sha256', $data);
         }
     }
+    
 ?>

@@ -3,7 +3,10 @@
     namespace App\Controller;
 
     use App\Configuration;
+    use App\Core\SettingsFatctory;
+    use App\Model\Settings;
     use App\Service\UserRepository;
+    use App\Service\SettingsRepository;
 
     class Dashboard extends Controller {
         function __construct(Configuration $configuration) {
@@ -16,12 +19,22 @@
             $user = $this->getUserFromSession();
 
             if ($user != null) {
-                $config = $this->getAppConfiguration();
-                $language = $this->getLanguage($user->language);
+                $config = $this->getAppConfiguration();       
+                $settings = $this->getUserSettings($user->id);
+
+                if ($settings == null){
+                    $factory = new SettingsFatctory();
+                    $settings = $factory->getSettings($user->id);
+
+                    $this->saveUserSettings($settings);
+                }
+
+                $language = $this->getLanguage($settings->language);
 
                 $content = [
                     'user' => $user,
-                    'config' => $config
+                    'config' => $config,
+                    'settings' => $settings
                 ];
 
                 $this->view('administrator', 'dashboard', $content, $language);
@@ -45,5 +58,20 @@
 
             return null;
         }
+
+        private function getUserSettings(int $userId) {
+            $connection = $this->getConnection();
+            $repository = new SettingsRepository($connection);
+
+            return $repository->findFromUserId($userId);
+        }
+        
+        private function saveUserSettings(Settings $settings) {
+            $connection = $this->getConnection();        
+            $repository = new SettingsRepository($connection);
+
+            $repository->save($settings);
+        }
     }
+    
 ?>

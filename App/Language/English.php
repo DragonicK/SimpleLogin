@@ -35,4 +35,5 @@
             $this->registerSuccess = 'The username is now registered';
         }
     }
+    
 ?>

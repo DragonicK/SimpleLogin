@@ -35,4 +35,5 @@
             $this->registerSuccess = 'ユーザー名が登録されました';
         }
     }
+    
 ?>

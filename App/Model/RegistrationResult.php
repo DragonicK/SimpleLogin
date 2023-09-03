@@ -10,4 +10,5 @@
         const UsernameExists = 4;
         const PassphraseDoNotMatch = 5;
     }
+    
 ?>
